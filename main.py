@@ -23,6 +23,7 @@ import numpy as np
 import matrices3d as m3d
 import polyhedra as ph
 import projection as prj
+import rotations
 
 
 class App:
@@ -93,12 +94,9 @@ class App:
         section("Dev 2 · Пункт 4 — Масштаб отн. центра")
         btn("Масштаб отн. центра (sx, sy, sz)", self._tr_scale_center)
 
-        # ═══════════ ЗОНА DEV 3 · ПУНКТЫ 5-6 (свободно) ═══════════
-        # Пункт 5: M = m3d.Matrix4.around_center(m3d.Matrix4.rotation_x(a), c)
-        # Пункт 6: план из лекции 9 через m3d.compose(...)
-        section("Dev 3 · Пункты 5-6")
-        tk.Label(left, text="(зона свободна: вращение вокруг\nпрямой через центр и произвольной)",
-                 bg="#f4f4f4", fg="#888").pack()
+        # ═══════════ ЗОНА DEV 3 · ПУНКТЫ 5-6 ═══════════
+        # Вся реализация — в dev3_rotations.py
+        self.rotation_panel = rotations.RotationPanel(self, left)
 
         # ── Журнал ──
         section("Журнал")
