@@ -77,18 +77,21 @@ class App:
                            command=lambda m=m: self._set_projection(m)
                            ).pack(fill=tk.X, padx=14)
 
-        # ═══════════ ЗОНА DEV 2 · ПУНКТЫ 3-4 (свободно) ═══════════
-        # Сокомандник добавляет, например:
-        # section("Dev 2 · Пункт 3 — Отражения")
-        # btn("Отражение отн. XY",
-        #     lambda: self._apply_matrix(m3d.Matrix4.reflection_xy(),
-        #                                "п.3: отражение отн. XY"))
-        # Пункт 4 (масштаб отн. центра):
-        # M = m3d.Matrix4.around_center(m3d.Matrix4.scaling(sx, sy, sz),
-        #                               self.poly.center())
-        section("Dev 2 · Пункты 3-4")
-        tk.Label(left, text="(зона свободна: отражения,\nмасштаб отн. центра)",
-                 bg="#f4f4f4", fg="#888").pack()
+        # ── Пункт 3: Отражения ──
+        section("Dev 2 · Пункт 3 — Отражения")
+        btn("Отражение отн. XY (Z -> -Z)",
+            lambda: self._apply_matrix(m3d.Matrix4.reflection_xy(),
+                                       "п.3: отражение отн. XY"))
+        btn("Отражение отн. XZ (Y -> -Y)",
+            lambda: self._apply_matrix(m3d.Matrix4.reflection_xz(),
+                                       "п.3: отражение отн. XZ"))
+        btn("Отражение отн. YZ (X -> -X)",
+            lambda: self._apply_matrix(m3d.Matrix4.reflection_yz(),
+                                       "п.3: отражение отн. YZ"))
+
+        # ── Пункт 4: Масштабирование относительно центра ──
+        section("Dev 2 · Пункт 4 — Масштаб отн. центра")
+        btn("Масштаб отн. центра (sx, sy, sz)", self._tr_scale_center)
 
         # ═══════════ ЗОНА DEV 3 · ПУНКТЫ 5-6 (свободно) ═══════════
         # Пункт 5: M = m3d.Matrix4.around_center(m3d.Matrix4.rotation_x(a), c)
@@ -186,6 +189,26 @@ class App:
         M = m3d.Matrix4.scaling(*vals)
         self._apply_matrix(M, f"п.2: масштаб ({vals[0]}, {vals[1]}, {vals[2]})")
 
+    def _tr_scale_center(self):
+        vals = []
+        for name in ("sx", "sy", "sz"):
+            v = simpledialog.askfloat("Масштаб отн. центра", f"{name}:",
+                                      parent=self.root, initialvalue=1.5)
+            if v is None:
+                return
+            vals.append(v)
+        
+        # 1. Создаем базовую матрицу масштаба
+        M_scale = m3d.Matrix4.scaling(*vals)
+        
+        # 2. Получаем центр текущего многогранника
+        center = self.poly.center()
+        
+        # 3. Используем хелпер around_center: T(c) * M * T(-c)
+        M_final = m3d.Matrix4.around_center(M_scale, center)
+        
+        self._apply_matrix(M_final, f"п.4: масштаб отн. центра ({vals[0]}, {vals[1]}, {vals[2]})")
+        
     # ──────────────────────────── Проекции ────────────────────────────
     def _set_projection(self, mode: str):
         self.proj_mode.set(mode)

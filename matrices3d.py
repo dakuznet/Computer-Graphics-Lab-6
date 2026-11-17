@@ -76,19 +76,18 @@ class Matrix4:
         t_inv = Matrix4.translation(-c.x, -c.y, -c.z)
         return t @ M_centered @ t_inv
 
-    # ═══════════════════════════════════════════════════════════
-    # ЗОНА DEV 2 · ПУНКТ 3 — отражения относительно координатных плоскостей
-    # Пример реализации (раскомментируйте и добавьте кнопки в main.py):
-    # @staticmethod
-    # def reflection_xy() -> np.ndarray:   # z -> -z
-    #     return Matrix4.scaling(1, 1, -1)
-    # @staticmethod
-    # def reflection_xz() -> np.ndarray:   # y -> -y
-    #     return Matrix4.scaling(1, -1, 1)
-    # @staticmethod
-    # def reflection_yz() -> np.ndarray:   # x -> -x
-    #     return Matrix4.scaling(-1, 1, 1)
-    # ═══════════════════════════════════════════════════════════
+    # ПУНКТ 3 — отражения относительно координатных плоскостей
+    @staticmethod
+    def reflection_xy() -> np.ndarray:   # z -> -z
+        return Matrix4.scaling(1, 1, -1)
+
+    @staticmethod
+    def reflection_xz() -> np.ndarray:   # y -> -y
+        return Matrix4.scaling(1, -1, 1)
+
+    @staticmethod
+    def reflection_yz() -> np.ndarray:   # x -> -x
+        return Matrix4.scaling(-1, 1, 1)
 
     # ═══════════════════════════════════════════════════════════
     # ЗОНА DEV 3 · ПУНКТ 6 — поворот вокруг произвольной прямой A + t·(l,m,n)
