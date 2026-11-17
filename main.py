@@ -1,19 +1,3 @@
-"""
-MAIN (GUI) — интегратор лабораторной №7-9.
-
-Распределение зон:
-• Dev 1 (этот файл + polyhedra.py + projection.py): пункты 1-2 —
-  отображение правильного многогранника, аффинные преобразования матрицами.
-• Dev 2: пункт 3 (отражения), пункт 4 (масштаб отн. центра).
-• Dev 3: пункт 5 (вращение вокруг прямой через центр), пункт 6 (произвольная прямая).
-
-ТОЧКИ ИНТЕГРАЦИИ ДЛЯ СОКОМАНДНИКОВ:
-1) matrices3d.Matrix4 — добавить статические фабрики матриц (секции размечены).
-2) App._apply_matrix(M, msg) — единственная точка применения: трансформирует
-   модель, логирует параметры и матрицу, перерисовывает сцену.
-3) App.poly / App.base_poly — текущая модель и оригинал;
-   Matrix4.around_center(M, c) — готовый хелпер T(c)·M·T(-c) для пунктов 4-5.
-"""
 import math
 import tkinter as tk
 from tkinter import ttk, simpledialog, messagebox
@@ -29,14 +13,14 @@ import rotations
 class App:
     def __init__(self, root: tk.Tk):
         self.root = root
-        root.title("Лаб. 7-9: правильные многогранники и аффинные преобразования 3D")
+        root.title("Лаб. 7")
         root.geometry("1150x720")
 
-        self.base_poly = None          # оригинал модели (для сброса)
-        self.poly = None               # текущая модель
-        self.base_radius = 1.0         # радиус оригинала (фиксированный масштаб вида)
+        self.base_poly = None
+        self.poly = None
+        self.base_radius = 1.0
         self.proj_mode = tk.StringVar(value=prj.AXONOMETRIC)
-        self.persp_distance = 8.0      # параметр перспективной проекции
+        self.persp_distance = 8.0
 
         self._build_ui()
         self._load_polyhedron(self.combo.get())
@@ -94,8 +78,6 @@ class App:
         section("Dev 2 · Пункт 4 — Масштаб отн. центра")
         btn("Масштаб отн. центра (sx, sy, sz)", self._tr_scale_center)
 
-        # ═══════════ ЗОНА DEV 3 · ПУНКТЫ 5-6 ═══════════
-        # Вся реализация — в dev3_rotations.py
         self.rotation_panel = rotations.RotationPanel(self, left)
 
         # ── Журнал ──
@@ -222,7 +204,6 @@ class App:
         cw = max(self.canvas.winfo_width(), 100)
         ch = max(self.canvas.winfo_height(), 100)
         cx, cy = cw / 2, ch / 2
-        # Фиксированный масштаб кадра по оригиналу: преобразования ВИДНЫ
         scale = min(cw, ch) / (3.2 * max(self.base_radius, 1e-6))
 
         mode = self.proj_mode.get()
@@ -234,15 +215,13 @@ class App:
             screen = [(cx + q[0] * scale, cy + q[1] * scale) for q in proj]
             faces.append((depth, screen))
 
-        # Алгоритм художника: дальние грани (большой depth) рисуем первыми.
-        # Для выпуклых многогранников это даёт точный порядок без z-buffer.
         faces.sort(key=lambda f: -f[0])
 
         depths = [f[0] for f in faces]
         dmin, dmax = min(depths), max(depths)
         span = (dmax - dmin) or 1.0
         for depth, screen in faces:
-            t = (depth - dmin) / span          # 0 = ближняя грань, 1 = дальняя
+            t = (depth - dmin) / span
             coords = [c for pt in screen for c in pt]
             self.canvas.create_polygon(coords, fill=self._shade(t),
                                        outline="#222", width=1.5)

@@ -1,8 +1,3 @@
-"""
-ФАБРИКИ ПРАВИЛЬНЫХ МНОГОГРАННИКОВ.
-Все координаты центрированы в начале координат.
-* икосаэдр и додекаэдр — дополнительные (со звёздочкой в задании).
-"""
 import math
 
 from geom3d import Point3D, Face, Polyhedron
@@ -62,7 +57,6 @@ def dodecahedron() -> Polyhedron:
     return Polyhedron("Додекаэдр*", v, f)
 
 
-# Реестр для комбобокса в GUI
 REGISTRY = {
     "Тетраэдр": tetrahedron,
     "Гексаэдр (куб)": hexahedron,

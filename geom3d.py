@@ -1,7 +1,3 @@
-"""
-3D-геометрия: точка, грань (многоугольник), многогранник.
-Точки хранятся в однородных координатах (x, y, z, w).
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass

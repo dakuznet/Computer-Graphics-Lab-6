@@ -1,13 +1,5 @@
-"""
-ПРОЕКЦИИ 3D → 2D:
-• AXONOMETRIC — параллельная (изометрическая): видовая матрица + отбрасывание Z;
-• PERSPECTIVE — центральная: та же видовая матрица + перспективное деление на w.
-Переключение в GUI через prj.MODES.
-"""
 import math
-
 import numpy as np
-
 from geom3d import Point3D
 from matrices3d import Matrix4
 
